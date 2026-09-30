@@ -1,0 +1,46 @@
+<%- include('../partials/header', { title: 'Mes Offres Suivies - MERN 2026/2027' }) %>
+<%- include('../partials/navbar', { activeNav: 'suivies' }) %>
+
+<main class="container">
+
+  <!-- Page Title Banner -->
+  <section class="page-title-banner">
+    <p class="sub">Espace Candidat Local</p>
+    <h1>
+      Mes Offres Suivies
+      <span class="brand-badge" style="font-size:0.8125rem;font-weight:600;">
+        <span data-followed-count>0</span> offres enregistrées
+      </span>
+    </h1>
+  </section>
+
+  <!-- Controls Bar -->
+  <section class="card followed-controls" aria-label="Actions des offres suivies">
+    <p>Offres conservées sur ce navigateur grâce à localStorage. Aucun compte utilisateur n'est requis.</p>
+    <div class="followed-actions">
+      <label for="followed-sort">Trier par</label>
+      <select id="followed-sort" name="status" class="custom-select" aria-label="Trier les offres suivies">
+        <option value="newest">Plus récentes</option>
+        <option value="oldest">Plus anciennes</option>
+      </select>
+      <button type="button" class="btn btn-outline btn-sm clear-followed-button">Tout effacer</button>
+    </div>
+  </section>
+
+  <!-- Grille remplie dynamiquement par js/followed.js avec les donnees MySQL correspondantes -->
+  <section class="offers-grid tracked-list followed-offers-grid" aria-live="polite"></section>
+
+  <!-- Help Box -->
+  <section class="card followed-help">
+    <div>
+      <h2 style="font-size:1rem;font-weight:700;margin-bottom:0.35rem;">Vos offres favorites toujours sous la main</h2>
+      <p style="font-size:0.85rem;color:var(--text-muted);">
+        Vos sélections sont conservées sur votre navigateur pour vous permettre de préparer vos candidatures sereinement, même après rechargement de la page.
+      </p>
+    </div>
+    <a href="/" class="btn btn-outline btn-sm">Retour aux offres</a>
+  </section>
+
+</main>
+
+<%- include('../partials/footer', { extraScript: '/js/followed.js' }) %>
