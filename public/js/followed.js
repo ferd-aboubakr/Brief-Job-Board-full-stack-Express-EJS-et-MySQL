@@ -1,13 +1,9 @@
-// public/js/followed.js
-// Affichage et gestion des offres suivies sur la page dediee
-
 const container = document.querySelector('.followed-offers-grid');
 const clearBtn = document.querySelector('.clear-followed-button');
 const sortSelect = document.getElementById('followed-sort');
 
 let loadedOffers = [];
 
-// 1. Rendu d'une carte d'offre
 function createOfferCard(offer) {
   const badgeClass = offer.type_contrat === 'Stage' ? 'badge-stage' : 'badge-alternance';
   const techBadges = offer.technologies.map(t => `<span class="tech-tag">${t}</span>`).join('');
@@ -50,7 +46,6 @@ function createOfferCard(offer) {
   `;
 }
 
-// 2. Afficher l'etat vide
 function showEmptyState() {
   container.innerHTML = `
     <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
@@ -62,7 +57,6 @@ function showEmptyState() {
   `;
 }
 
-// 3. Charger les donnees depuis l'API MySQL
 async function loadFollowedOffers() {
   const ids = getFollowedIds();
   updateNavCount();
@@ -82,7 +76,6 @@ async function loadFollowedOffers() {
   }
 }
 
-// 4. Rendu et tri de la liste
 function renderList() {
   if (loadedOffers.length === 0) {
     showEmptyState();
@@ -98,7 +91,6 @@ function renderList() {
 
   container.innerHTML = sorted.map(createOfferCard).join('');
 
-  // Ecouteur pour retirer une offre
   container.querySelectorAll('.bookmark-checkbox').forEach(box => {
     box.addEventListener('change', () => {
       const id = box.dataset.id;
@@ -110,7 +102,6 @@ function renderList() {
   });
 }
 
-// 5. Gestion des evenements
 if (clearBtn) {
   clearBtn.addEventListener('click', () => {
     if (confirm('Voulez-vous vraiment effacer toutes vos offres suivies ?')) {
