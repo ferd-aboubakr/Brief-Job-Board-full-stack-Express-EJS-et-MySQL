@@ -1,5 +1,3 @@
-// server.js
-// Point d'entree principal du serveur Express
 const express = require('express');
 const path = require('path');
 require('dotenv').config();
@@ -10,22 +8,16 @@ const adminRoutes = require('./routes/adminRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Configuration du moteur de templates EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares pour parser les requetes
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Fichiers statiques (CSS, JS client, images)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Enregistrement des routes
 app.use('/', publicRoutes);
 app.use('/admin', adminRoutes);
 
-// Page 404
 app.use((req, res) => {
   res.status(404).render('pages/index', {
     offers: [],
@@ -35,7 +27,6 @@ app.use((req, res) => {
   });
 });
 
-// Gestionnaire d'erreurs global
 app.use((err, req, res, next) => {
   console.error('Erreur serveur :', err.stack || err.message);
   res.status(500).send(`
@@ -47,9 +38,6 @@ app.use((err, req, res, next) => {
   `);
 });
 
-// Demarrage du serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur Job Board démarré avec succès !`);
-  console.log(`📡 URL locale : http://localhost:${PORT}`);
-  console.log(`⚙️  Admin     : http://localhost:${PORT}/admin`);
+  console.log(`🚀 Serveur Job Board démarré sur http://localhost:${PORT}`);
 });

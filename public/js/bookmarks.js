@@ -1,6 +1,3 @@
-// public/js/bookmarks.js
-// Synchronise les boutons de favoris avec le localStorage
-
 function updateNavCount() {
   const count = getFollowedIds().length;
   document.querySelectorAll('[data-followed-count]').forEach(el => {
@@ -8,7 +5,6 @@ function updateNavCount() {
   });
 }
 
-// Initialise l'etat visuel des marque-pages au chargement de la page
 function initBookmarks() {
   updateNavCount();
 
