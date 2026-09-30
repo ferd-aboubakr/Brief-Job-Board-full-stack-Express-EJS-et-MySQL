@@ -1,0 +1,165 @@
+<%- include('../../partials/header', { title: (isEdit ? 'Modifier l\'offre' : 'Déposer une offre') + ' - MERN 2026/2027' }) %>
+<%- include('../../partials/navbar', { activeNav: isEdit ? 'admin' : 'deposer' }) %>
+
+<main class="container">
+
+  <!-- Top Banner -->
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1.5rem;margin-bottom:1.5rem;">
+    <div>
+      <span class="badge badge-stage" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.375rem;">
+        <%= isEdit ? 'ADMINISTRATION • ÉDITION' : 'PORTAIL RECRUTEURS & PARTENAIRES' %>
+      </span>
+      <h1 style="font-size:1.6rem;font-weight:800;margin-top:0.25rem;">
+        <%= isEdit ? 'Modifier l\'offre #' + offer.id : 'Déposer une opportunité' %>
+      </h1>
+      <p style="font-size:0.875rem;color:var(--text-muted);max-width:620px;margin-top:0.25rem;">
+        <%= isEdit ? 'Mettez à jour les informations du poste et les compétences requises.' : 'Partagez une opportunité de stage ou d\'alternance avec les étudiants de la promotion.' %>
+      </p>
+    </div>
+
+    <div>
+      <a href="/admin" class="btn btn-outline btn-sm">
+        ← Retour au tableau de bord
+      </a>
+    </div>
+  </div>
+
+  <!-- Formulaire d'offre (Creation / Modification) -->
+  <form action="<%= isEdit ? '/admin/offres/' + offer.id + '/modifier' : '/admin/offres' %>" method="POST" style="max-width:860px;">
+
+    <!-- Section 1 : Entreprise -->
+    <section class="card" style="margin-bottom:1.5rem;padding:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">1. Informations Entreprise</h2>
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;">Sélectionnez l'entreprise partenaire émettrice de l'offre.</p>
+
+      <div class="form-group">
+        <label for="entreprise_id" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+          Entreprise partenaire <span style="color:var(--danger-text);">*</span>
+        </label>
+        <select name="entreprise_id" id="entreprise_id" class="custom-select" style="width:100%;" required>
+          <option value="">-- Choisir une entreprise --</option>
+          <% entreprises.forEach(ent => { %>
+            <option value="<%= ent.id %>" <%= (offer && offer.entreprise_id === ent.id) ? 'selected' : '' %>>
+              <%= ent.nom %> (<%= ent.secteur || ent.ville %>)
+            </option>
+          <% }) %>
+        </select>
+      </div>
+    </section>
+
+    <!-- Section 2 : Poste & Modalites -->
+    <section class="card" style="margin-bottom:1.5rem;padding:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">2. Poste & Modalités</h2>
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;">Cadre contractuel, intitulé et localisation du contrat.</p>
+
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label for="titre" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+          Titre du poste <span style="color:var(--danger-text);">*</span>
+        </label>
+        <input type="text" id="titre" name="titre" class="input-control" value="<%= offer ? offer.titre : '' %>" placeholder="Ex. Développeur Fullstack React / Node.js Junior" required>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+        <div class="form-group">
+          <label class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+            Type de contrat <span style="color:var(--danger-text);">*</span>
+          </label>
+          <div style="display:flex;gap:1.5rem;margin-top:0.5rem;">
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="type_contrat" value="Stage" <%= (!offer || offer.type_contrat === 'Stage') ? 'checked' : '' %>>
+              <span class="badge badge-stage">Stage</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+              <input type="radio" name="type_contrat" value="Alternance" <%= (offer && offer.type_contrat === 'Alternance') ? 'checked' : '' %>>
+              <span class="badge badge-alternance">Alternance</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="ville" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+            Ville & Télétravail <span style="color:var(--danger-text);">*</span>
+          </label>
+          <input type="text" id="ville" name="ville" class="input-control" value="<%= offer ? offer.ville : '' %>" placeholder="Ex. Paris, Lyon, Remote..." required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description_courte" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+          Description courte (affichée sur la carte) <span style="color:var(--danger-text);">*</span>
+        </label>
+        <input type="text" id="description_courte" name="description_courte" class="input-control" value="<%= offer ? offer.description_courte : '' %>" placeholder="Ex. Intégrez l'équipe Compute pour concevoir les portails d'administration interne." required>
+      </div>
+    </section>
+
+    <!-- Section 3 : Technologies demandees -->
+    <section class="card" style="margin-bottom:1.5rem;padding:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">3. Technologies demandées</h2>
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;">Cochez les briques techniques au cœur du poste.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:0.75rem;">
+        <% technologies.forEach(tech => { %>
+          <label style="display:flex;align-items:center;gap:0.5rem;background:var(--border-light);padding:0.5rem 0.75rem;border-radius:var(--radius-md);cursor:pointer;">
+            <input type="checkbox" name="technologies" value="<%= tech.id %>"
+              <%= (offer && offer.technology_ids && offer.technology_ids.includes(tech.id)) ? 'checked' : '' %>>
+            <span style="font-size:0.875rem;font-weight:500;"><%= tech.nom %></span>
+          </label>
+        <% }) %>
+      </div>
+    </section>
+
+    <!-- Section 4 : Missions & Profil -->
+    <section class="card" style="margin-bottom:1.5rem;padding:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">4. Missions & Profil recherché</h2>
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;">Détaillez le quotidien du poste et les prérequis attendus.</p>
+
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label for="description_longue" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+          Description détaillée des missions <span style="color:var(--danger-text);">*</span>
+        </label>
+        <textarea id="description_longue" name="description_longue" rows="5" class="input-control" placeholder="Détaillez les projets, l'équipe, les méthodologies de travail..." required><%= offer ? offer.description_longue : '' %></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="profil_recherche" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+          Profil recherché & Compétences <span style="color:var(--danger-text);">*</span>
+        </label>
+        <textarea id="profil_recherche" name="profil_recherche" rows="4" class="input-control" placeholder="Formation, autonomie, compétences clés..." required><%= offer ? offer.profil_recherche : '' %></textarea>
+      </div>
+    </section>
+
+    <!-- Section 5 : Candidature & Contact -->
+    <section class="card" style="margin-bottom:1.5rem;padding:1.5rem;">
+      <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:0.25rem;">5. Contact & Candidature</h2>
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:1rem;">Renseignez au moins un moyen de candidature (lien ou email).</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label for="contact_email" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+            Email de contact
+          </label>
+          <input type="email" id="contact_email" name="contact_email" class="input-control" value="<%= offer ? (offer.contact_email || '') : '' %>" placeholder="recrutement@entreprise.fr">
+        </div>
+
+        <div class="form-group">
+          <label for="lien_candidature" class="form-label" style="font-weight:600;display:block;margin-bottom:0.35rem;">
+            Lien vers l'offre / Carrières
+          </label>
+          <input type="url" id="lien_candidature" name="lien_candidature" class="input-control" value="<%= offer ? (offer.lien_candidature || '') : '' %>" placeholder="https://entreprise.fr/careers/123">
+        </div>
+      </div>
+    </section>
+
+    <!-- Actions Footer -->
+    <div style="display:flex;justify-content:flex-end;gap:1rem;margin-bottom:3rem;">
+      <a href="/admin" class="btn btn-outline">Annuler</a>
+      <button type="submit" class="btn btn-primary" style="padding:0.6rem 1.5rem;font-size:0.95rem;">
+        <%= isEdit ? 'Enregistrer les modifications' : 'Publier l\'offre' %>
+      </button>
+    </div>
+
+  </form>
+
+</main>
+
+<%- include('../../partials/footer') %>
