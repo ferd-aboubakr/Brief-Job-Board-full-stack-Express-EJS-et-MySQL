@@ -1,0 +1,202 @@
+<%- include('../partials/header', { title: 'Portail Stages & Alternances - MERN 2026/2027' }) %>
+<%- include('../partials/navbar', { activeNav: 'offres' }) %>
+
+<main class="container">
+
+  <!-- Telemetry Hero Banner -->
+  <section class="telemetry-banner">
+    <div class="telemetry-header">
+      <div class="telemetry-title-area">
+        <div class="sub-label">
+          <span class="dot dot-teal"></span>
+          <span>Cohort Telemetry Live</span>
+          <span style="color:var(--text-muted); font-weight:normal; margin-left: 0.25rem;">Promo MERN 26/27</span>
+        </div>
+        <h1>Portail Stages & Alternances</h1>
+        <p>Suivi en temps réel des opportunités de pré-embauche et immersion Full-Stack.</p>
+      </div>
+
+      <div class="telemetry-stats">
+        <div class="stat-box">
+          <div class="stat-label">En recherche</div>
+          <div class="stat-value">18</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">En entretien</div>
+          <div class="stat-value purple">11</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Total offres</div>
+          <div class="stat-value green"><%= counts.total %></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="telemetry-progress-container">
+      <div class="telemetry-progress-labels">
+        <span>Vélocité de placement de la cohorte</span>
+        <span style="color:var(--text-main); font-weight:700;">32.5% Placé</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-fill fill-green" title="Placés (32.5%)"></div>
+        <div class="progress-fill fill-blue" title="En entretien (25%)"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter Card (Traite cote serveur avec Express & MySQL) -->
+  <section class="filter-card">
+    <form action="/" method="GET" id="filters-form" aria-label="Rechercher et filtrer les offres">
+      <div class="search-row">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="search" name="q" value="<%= filters.q || '' %>" class="search-input" aria-label="Rechercher une offre" placeholder="Rechercher par poste, mot-clé, entreprise (ex: React, Scaleway, Backend)...">
+        </div>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+        <a href="/" class="btn btn-outline" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.35rem;">
+          <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Réinitialiser
+        </a>
+      </div>
+
+      <div class="filter-options-row">
+        <!-- Filtre Contrat -->
+        <div class="contract-pills">
+          <span class="filter-label">Contrat :</span>
+
+          <input type="radio" id="c-all" name="contract" value="all" class="contract-radio-input" <%= (!filters.contract || filters.contract === 'all') ? 'checked' : '' %> onchange="this.form.submit()">
+          <label for="c-all" class="pill-btn">Tous (<%= counts.total %>)</label>
+
+          <input type="radio" id="c-stage" name="contract" value="Stage" class="contract-radio-input" <%= filters.contract === 'Stage' ? 'checked' : '' %> onchange="this.form.submit()">
+          <label for="c-stage" class="pill-btn">Stage (<%= counts.stage %>)</label>
+
+          <input type="radio" id="c-alternance" name="contract" value="Alternance" class="contract-radio-input" <%= filters.contract === 'Alternance' ? 'checked' : '' %> onchange="this.form.submit()">
+          <label for="c-alternance" class="pill-btn">Alternance (<%= counts.alternance %>)</label>
+        </div>
+
+        <div class="select-filters">
+          <!-- Filtre Ville -->
+          <select name="location" class="custom-select" aria-label="Filtrer par ville" onchange="this.form.submit()">
+            <option value="all">📍 Toutes les villes</option>
+            <option value="Paris" <%= filters.location === 'Paris' ? 'selected' : '' %>>Paris</option>
+            <option value="Lyon" <%= filters.location === 'Lyon' ? 'selected' : '' %>>Lyon</option>
+            <option value="Nantes" <%= filters.location === 'Nantes' ? 'selected' : '' %>>Nantes</option>
+            <option value="Remote" <%= filters.location === 'Remote' ? 'selected' : '' %>>Remote / Télétravail</option>
+          </select>
+
+          <!-- Filtre Technologie -->
+          <select name="technology" class="custom-select" aria-label="Filtrer par technologie" onchange="this.form.submit()">
+            <option value="all">&lt;&gt; Toutes les technos</option>
+            <% technologies.forEach(tech => { %>
+              <option value="<%= tech.nom %>" <%= filters.technology === tech.nom ? 'selected' : '' %>>
+                <%= tech.nom %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <!-- Conservation du tri dans le formulaire -->
+      <input type="hidden" name="sort" value="<%= filters.sort || 'newest' %>">
+    </form>
+  </section>
+
+  <!-- Meta Info & Sort Bar -->
+  <div class="results-meta-bar">
+    <div class="results-count">
+      <span style="color:var(--success); margin-right: 0.25rem;">•</span>
+      <strong><%= offers.length %></strong> offre<%= offers.length > 1 ? 's' : '' %> disponible<%= offers.length > 1 ? 's' : '' %>
+      <span style="color:var(--text-subtle);">pour la promo 2026/2027</span>
+    </div>
+
+    <div class="sort-selector">
+      <span class="sort-label">Trier par :</span>
+      <a href="?q=<%= encodeURIComponent(filters.q || '') %>&contract=<%= filters.contract || 'all' %>&location=<%= filters.location || 'all' %>&technology=<%= filters.technology || 'all' %>&sort=newest"
+         class="sort-opt <%= (!filters.sort || filters.sort === 'newest') ? 'active' : '' %>" style="text-decoration:none;">
+        Plus récentes
+      </a>
+      <a href="?q=<%= encodeURIComponent(filters.q || '') %>&contract=<%= filters.contract || 'all' %>&location=<%= filters.location || 'all' %>&technology=<%= filters.technology || 'all' %>&sort=oldest"
+         class="sort-opt <%= filters.sort === 'oldest' ? 'active' : '' %>" style="text-decoration:none;">
+        Plus anciennes
+      </a>
+    </div>
+  </div>
+
+  <!-- Grille des offres issues de MySQL -->
+  <section class="offers-grid" aria-live="polite">
+    <% if (offers.length === 0) { %>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; background: var(--surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg);">
+        <svg style="width:48px;height:48px;color:var(--text-muted);margin-bottom:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <h3 style="font-size:1.125rem;font-weight:700;margin-bottom:0.5rem;">Aucune offre trouvée</h3>
+        <p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.5rem;">Modifiez vos filtres ou réinitialisez la recherche pour voir toutes les opportunités.</p>
+        <a href="/" class="btn btn-outline btn-sm">Réinitialiser les filtres</a>
+      </div>
+    <% } else { %>
+      <% offers.forEach(offer => { %>
+        <article class="card offer-card" data-id="<%= offer.id %>">
+          <div class="card-header">
+            <div class="company-info">
+              <div class="company-logo-placeholder">
+                <% if (offer.entreprise_logo) { %>
+                  <img src="<%= offer.entreprise_logo %>" alt="<%= offer.entreprise_nom %>" style="width:100%;height:100%;object-fit:cover;border-radius:4px;">
+                <% } else { %>
+                  🏢
+                <% } %>
+              </div>
+              <div>
+                <h3 class="offer-title">
+                  <a href="/offres/<%= offer.id %>"><%= offer.titre %></a>
+                </h3>
+                <div class="company-meta">
+                  <strong><%= offer.entreprise_nom %></strong> • 📍 <%= offer.ville %>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-top-right">
+              <span class="badge <%= offer.type_contrat === 'Stage' ? 'badge-stage' : 'badge-alternance' %>">
+                <%= offer.type_contrat %>
+              </span>
+              <input type="checkbox" id="fav-<%= offer.id %>" class="bookmark-checkbox" data-id="<%= offer.id %>">
+              <label for="fav-<%= offer.id %>" class="bookmark-btn" title="Suivre cette offre">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              </label>
+            </div>
+          </div>
+
+          <p class="offer-description"><%= offer.description_courte %></p>
+
+          <div class="tech-tags">
+            <% offer.technologies.forEach(tech => { %>
+              <span class="tech-tag"><%= tech %></span>
+            <% }) %>
+          </div>
+
+          <div class="card-footer">
+            <span class="publication-date">Publié le <%= new Date(offer.date_publication).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) %></span>
+            <a href="/offres/<%= offer.id %>" class="btn btn-outline btn-sm">Voir l'offre</a>
+          </div>
+        </article>
+      <% }) %>
+    <% } %>
+  </section>
+
+  <!-- Bottom Info CTA Banner -->
+  <section class="cta-banner">
+    <div class="cta-content">
+      <div class="cta-icon">
+        <svg style="width:24px;height:24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      </div>
+      <div class="cta-text">
+        <h3>Besoin de valider votre fiche de poste ?</h3>
+        <p>Les conventions de stage et contrats d'apprentissage MERN 26/27 doivent inclure au minimum 60% de développement applicatif pour être validés par la direction pédagogique.</p>
+      </div>
+    </div>
+    <a href="/admin/offres/nouveau" class="btn btn-outline" style="background-color:white;">
+      Déposer une offre
+    </a>
+  </section>
+
+</main>
+
+<%- include('../partials/footer') %>
