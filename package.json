@@ -1,0 +1,30 @@
+{
+  "name": "job-board-mern",
+  "version": "1.0.0",
+  "description": "Portail d'offres de stage et alternance MERN full-stack Express, EJS et MySQL",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "db:seed": "node database/seed.js",
+    "db:reset": "node database/reset.js"
+  },
+  "keywords": [
+    "express",
+    "ejs",
+    "mysql",
+    "job-board",
+    "mern"
+  ],
+  "author": "YouCode Learner",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mysql2": "^3.9.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
