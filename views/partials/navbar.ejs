@@ -1,0 +1,49 @@
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="nav-brand">
+        <a href="/" class="brand-logo">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+          MERN 2026/2027
+        </a>
+        <span class="brand-badge"><%= typeof activeNav !== 'undefined' && activeNav === 'admin' ? 'Console Admin' : 'Promotion Officielle' %></span>
+      </div>
+
+      <nav>
+        <ul class="nav-menu">
+          <li>
+            <a href="/" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'offres' ? 'active' : '' %>">
+              <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2 2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              Offres
+            </a>
+          </li>
+          <li>
+            <a href="/offres-suivies" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'suivies' ? 'active' : '' %>">
+              <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+              Suivies
+              <span class="nav-badge" data-followed-count>0</span>
+            </a>
+          </li>
+          <li>
+            <a href="/admin/offres/nouveau" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'deposer' ? 'active' : '' %>">
+              <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              Déposer
+            </a>
+          </li>
+          <li>
+            <a href="/admin" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'admin' ? 'active' : '' %>">
+              <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Admin
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="/admin" class="btn btn-ghost btn-sm" aria-label="Espace d'administration" title="Espace d'administration">
+          <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+        </a>
+        <div class="user-avatar" title="Élève Promotion">EP</div>
+      </div>
+    </div>
+  </header>
